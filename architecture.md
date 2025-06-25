@@ -17,7 +17,7 @@ graph TD
     end
 
     subgraph "Cloudflare (valuechainhackers.xyz)"
-        DNS[DNS Records]
+        DNS[valuechainhackers.xyz]
     end
 
     subgraph "Your Datacenter"
