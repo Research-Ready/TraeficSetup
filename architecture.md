@@ -16,7 +16,7 @@ graph TD
         Admin[You, the Admin]
     end
 
-    subgraph "Cloudflare (example.com)"
+    subgraph "Cloudflare (valuechainhackers.xyz)"
         DNS[DNS Records]
     end
 
@@ -24,9 +24,15 @@ graph TD
         Public_IP[Public IP: 94.142.241.156]
 
         subgraph "Proxmox Host"
+            %% Host-level Services
             Firewall[Proxmox Firewall & NAT]
             OpenVPN[OpenVPN Service]
+            
+            subgraph "Management Network (e.g., 10.0.0.0/24)"
+                PVE_UI[Proxmox Web UI <br> https://10.0.0.11:8006]
+            end
 
+            %% Guest Networks (Virtual Bridges)
             subgraph "Network: vmbr4 (10.0.4.0/24)"
                 Traefik_LXC[Traefik LXC <br> 10.0.4.10]
             end
@@ -50,23 +56,27 @@ graph TD
     end
 
     %% Define Connections
+    %% Public User Flow
     User -- HTTPS --> DNS
     DNS -- "A Record: *" --> Public_IP
     Public_IP -- "Ports 80/443" --> Firewall
-    Firewall -- "Port Forwarding" --> Traefik_LXC
+    Firewall -- "Forwards to 10.0.4.10" --> Traefik_LXC
 
+    %% Admin Management Flow
+    Admin -- "Connects via VPN Tunnel" --> OpenVPN
+    OpenVPN -- "Provides access to" --> PVE_UI
+
+    %% Internal Service Routing
     Traefik_LXC -- "Can Route To" --> Dev_Placeholder
     Traefik_LXC -- "Can Route To" --> Test_Placeholder
     Traefik_LXC -- "Can Route To" --> Acc_Placeholder
     Traefik_LXC -- "Can Route To" --> Prod_Placeholder
 
+    %% Firewall Isolation Rules
     Dev_Placeholder ---->|Only talks back to| Traefik_LXC
     Test_Placeholder ---->|Only talks back to| Traefik_LXC
     Acc_Placeholder ---->|Only talks back to| Traefik_LXC
     Prod_Placeholder ---->|Only talks back to| Traefik_LXC
-
-    Admin -- "VPN Tunnel" --> OpenVPN
-    OpenVPN -- "Management Access" --> Proxmox
 ```
 
 ## Key Components
