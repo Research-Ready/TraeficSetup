@@ -57,8 +57,8 @@ graph TD
     end
 
     subgraph "Traffic Path inside Traefik"
-        Traefik_LXC -- "Inspects Hostname: 'app...'" --> |Routes to| Dev_Services
-        Traefik_LXC -- "Inspects Hostname: 'prod...'" --> |Routes to| Prod_Services
+        Traefik_LXC -- "Inspects Hostname: 'app...'" --> Dev_Services
+        Traefik_LXC -- "Inspects Hostname: 'prod...'" --> Prod_Services
     end
 ```
 
