@@ -1,0 +1,54 @@
+services:
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik-proxy"
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - "CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./acme.json:/acme.json"
+      - "./dynamic:/etc/traefik/dynamic:ro" # For your acceptance server
+    command:
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--providers.file.watch=true"
+      - "--log.level=DEBUG"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--certificatesresolvers.myresolver.acme.email=christiaan.gerardo@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/acme.json"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge.provider=cloudflare"
+      # --- ADD THIS: The main service now requests the wildcard ---
+      - "--certificatesresolvers.myresolver.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
+    labels:
+      # Labels for the dashboard
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.valuechainhackers.xyz`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.tls.certresolver=myresolver"
+      # --- ADD THIS: The main service now owns the wildcard certificate ---
+      - "traefik.http.routers.dashboard.tls.domains[0].main=valuechainhackers.xyz"
+      - "traefik.http.routers.dashboard.tls.domains[0].sans=*.valuechainhackers.xyz"
+
+  # A simple whoami service without any confusing TLS labels
+  whoami:
+    image: "traefik/whoami"
+    container_name: "whoami-app"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.valuechainhackers.xyz`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls=true"
+      - "traefik.http.routers.whoami.tls.certresolver=myresolver"

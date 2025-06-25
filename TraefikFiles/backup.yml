@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # --- 1. The Traefik Reverse Proxy ---
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik-proxy"
+    restart: unless-stopped
+    ports:
+      - "80:80"     # HTTP
+      - "443:443"   # HTTPS
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      # Mount the acme.json file for SSL certificates
+      - "./acme.json:/acme.json"
+    environment:
+      - "CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}"
+    command:
+      # -- API & Dashboard Configuration --
+      - "--api.dashboard=true"
+
+      # -- Entrypoints Configuration --
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+
+      # -- Let's Encrypt (ACME) Configuration --
+      - "--certificatesresolvers.myresolver.acme.email=christiaan.gerardo@gmail.com"
+      # --- ADDED FOR DEBUGGING ---
+      # - "--certificatesresolvers.myresolver.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.storage=/acme.json"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge.provider=cloudflare"
+#      - "--certificatesresolvers.myresolver.acme.domains=*.valuechainhackers.xyz,valuechainhackers.xyz"
+      # -- Provider Configuration --
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false" # Important for security
+
+      # -- Logging --
+      # --- CHANGED FOR DEBUGGING ---
+      - "--log.level=INFO"
+    labels:
+      # --- Dashboard Routing (dynamic configuration) ---
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.valuechainhackers.xyz`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.tls.certresolver=myresolver"
+      - "traefik.http.routers.dashboard.middlewares=auth"
+      # Define the Basic Auth middleware
+      - "traefik.http.middlewares.auth.basicauth.users=root:$$apr1$$QnX4wFav$$kLQqirVF85lri.OTwgFr"
+
+  whoami:
+    image: "traefik/whoami"
+    container_name: "hello-world-app"
+    restart: unless-stopped
+    labels:
+      # --- 'whoami' App Routing ---
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`valuechainhackers.xyz`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls=true"
+      - "traefik.http.routers.whoami.tls.certresolver=myresolver"

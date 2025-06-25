@@ -1,0 +1,19 @@
+http:
+  routers:
+    # Give your router a unique name
+    acceptance-webapp-router:
+      rule: "Host(`app.acceptance.valuechainhackers.xyz`)"
+      entryPoints:
+        - "websecure" # Use the HTTPS entrypoint
+      tls:
+        certResolver: "myresolver" # Use our Let's Encrypt resolver
+      service: "acceptance-webapp-service" # Link to the service below
+
+  services:
+    # Define the service and tell Traefik its IP address
+    acceptance-webapp-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.7.10:80" # The IP and port of your webserver
+
+          

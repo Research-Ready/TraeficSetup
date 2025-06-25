@@ -1,0 +1,17 @@
+http:
+  routers:
+    demonstrator:
+      entryPoints:
+        - websecure
+      rule: Host(`demonstrator.valuechainhackers.xyz`)
+      service: demonstrator-service
+      tls:
+        certResolver: myresolver
+
+  services:
+    demonstrator-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.5.13:5000"
+          - url: "http://10.0.5.13:5001"
+        passHostHeader: true

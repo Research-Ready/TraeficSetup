@@ -1,0 +1,86 @@
+services:
+  traefik:
+    image: "traefik:v2.10"
+    container_name: "traefik-proxy"
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - "CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./acme.json:/acme.json"
+    command:
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--certificatesresolvers.myresolver.acme.email=christiaan.gerardo@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/acme.json"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.dnschallenge.provider=cloudflare"
+      - "--log.level=INFO"
+
+  whoami:
+    image: "traefik/whoami"
+    container_name: "whoami-app"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`valuechainhackers.xyz`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls=true"
+      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
+      - "traefik.http.routers.whoami.tls.domains[0].main=valuechainhackers.xyz"
+      - "traefik.http.routers.whoami.tls.domains[0].sans=*.valuechainhackers.xyz"
+
+  dashboard:
+    image: "traefik:v2.10"
+    container_name: "traefik-dashboard"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard-api.rule=Host(`traefik.valuechainhackers.xyz`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.dashboard-api.entrypoints=websecure"
+      - "traefik.http.routers.dashboard-api.service=api@internal"
+      - "traefik.http.routers.dashboard-api.tls=true"
+      - "traefik.http.routers.dashboard-api.tls.certresolver=myresolver"
+      - "traefik.http.routers.dashboard-ui.rule=Host(`traefik.valuechainhackers.xyz`) && PathPrefix(`/dashboard`)"
+      - "traefik.http.routers.dashboard-ui.entrypoints=websecure"
+      - "traefik.http.routers.dashboard-ui.service=api@internal"
+      - "traefik.http.routers.dashboard-ui.tls=true"
+      - "traefik.http.routers.dashboard-ui.tls.certresolver=myresolver"
+      - "traefik.http.routers.dashboard-ui.middlewares=auth"
+      - "traefik.http.middlewares.auth.basicauth.users=root:$$apr1$$QnX4wFav$$kLQqirVF85lri.OTwgFr"
+
+  basic:
+    image: "nginxdemos/hello"
+    container_name: "basic-web"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.basic.rule=Host(`basic.valuechainhackers.xyz`)"
+      - "traefik.http.routers.basic.entrypoints=websecure"
+      - "traefik.http.routers.basic.tls=true"
+      - "traefik.http.routers.basic.tls.certresolver=myresolver"
+      - "traefik.http.routers.basic.tls.domains[0].main=valuechainhackers.xyz"
+      - "traefik.http.routers.basic.tls.domains[0].sans=*.valuechainhackers.xyz"
+      - "traefik.http.services.basic.loadbalancer.server.port=80"
+
+  extra:
+    image: "nginxdemos/hello"
+    container_name: "extra-web"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.extra.rule=Host(`extra.valuechainhackers.xyz`)"
+      - "traefik.http.routers.extra.entrypoints=websecure"
+      - "traefik.http.routers.extra.tls=true"
+      - "traefik.http.routers.extra.tls.certresolver=myresolver"
+      - "traefik.http.routers.extra.tls.domains[0].main=valuechainhackers.xyz"
+      - "traefik.http.routers.extra.tls.domains[0].sans=*.valuechainhackers.xyz"
+      - "traefik.http.services.extra.loadbalancer.server.port=80"
