@@ -11,72 +11,55 @@ Traefik: 10.0.4.10
 
 ```mermaid
 graph TD
-    subgraph Internet
+    subgraph "Internet"
         User[External User]
-        Admin[You, the Admin]
     end
 
     subgraph "Cloudflare (valuechainhackers.xyz)"
-        DNS[valuechainhackers.xyz]
+        DNS[DNS Wildcard Record: *]
     end
 
     subgraph "Your Datacenter"
         Public_IP[Public IP: 94.142.241.156]
 
         subgraph "Proxmox Host"
-            %% Host-level Services
-            Firewall[Proxmox Firewall & NAT]
-            OpenVPN[OpenVPN Service]
-            
-            subgraph "Management Network (e.g., 10.0.0.0/24)"
-                PVE_UI[Proxmox Web UI <br> https://10.0.0.11:8006]
+            Public_Interface[Public Interface: vmbr0]
+
+            subgraph "Proxmox Firewall"
+                Rule1[1. DNAT Rule <br> Rewrites Dst IP to 10.0.4.10]
+                Rule2[2. FORWARD Rule <br> Allows packet from vmbr0 to vmbr4]
             end
 
-            %% Guest Networks (Virtual Bridges)
             subgraph "Network: vmbr4 (10.0.4.0/24)"
                 Traefik_LXC[Traefik LXC <br> 10.0.4.10]
             end
 
             subgraph "Network: vmbr5 (10.0.5.0/24)"
-                Dev_Placeholder[Dev Services <br> 10.0.5.x]
-            end
-
-            subgraph "Network: vmbr6 (10.0.6.0/24)"
-                Test_Placeholder[Test Services <br> 10.0.6.x]
-            end
-
-            subgraph "Network: vmbr7 (10.0.7.0/24)"
-                Acc_Placeholder[Acceptance Services <br> 10.0.7.x]
+                Dev_Services[Future Dev Services]
             end
 
             subgraph "Network: vmbr8 (10.0.8.0/24)"
-                Prod_Placeholder[Production Services <br> 10.0.8.x]
+                Prod_Services[Future Prod Services]
             end
+            %% ... other networks omitted for clarity
         end
     end
 
-    %% Define Connections
-    %% Public User Flow
-    User -- HTTPS --> DNS
-    DNS -- "A Record: *" --> Public_IP
-    Public_IP -- "Ports 80/443" --> Firewall
-    Firewall -- "Forwards to 10.0.4.10" --> Traefik_LXC
+    %% --- Data Flow ---
+    User -- "https://app.valuechainhackers.xyz" --> DNS
+    DNS -- "Points to 94.142.241.156" --> Public_IP
+    Public_IP --> Public_Interface
 
-    %% Admin Management Flow
-    Admin -- "Connects via VPN Tunnel" --> OpenVPN
-    OpenVPN -- "Provides access to" --> PVE_UI
+    subgraph "Traffic Path on Proxmox Host"
+        Public_Interface -- "Packet on port 443 arrives" --> Rule1
+        Rule1 -- "Packet is now addressed to 10.0.4.10" --> Rule2
+        Rule2 -- "Packet is permitted to cross network boundary" --> Traefik_LXC
+    end
 
-    %% Internal Service Routing
-    Traefik_LXC -- "Can Route To" --> Dev_Placeholder
-    Traefik_LXC -- "Can Route To" --> Test_Placeholder
-    Traefik_LXC -- "Can Route To" --> Acc_Placeholder
-    Traefik_LXC -- "Can Route To" --> Prod_Placeholder
-
-    %% Firewall Isolation Rules
-    Dev_Placeholder ---->|Only talks back to| Traefik_LXC
-    Test_Placeholder ---->|Only talks back to| Traefik_LXC
-    Acc_Placeholder ---->|Only talks back to| Traefik_LXC
-    Prod_Placeholder ---->|Only talks back to| Traefik_LXC
+    subgraph "Traffic Path inside Traefik"
+        Traefik_LXC -- "Inspects Hostname: 'app...'" --> |Routes to| Dev_Services
+        Traefik_LXC -- "Inspects Hostname: 'prod...'" --> |Routes to| Prod_Services
+    end
 ```
 
 ## Key Components
