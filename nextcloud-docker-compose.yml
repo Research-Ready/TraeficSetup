@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  nextcloud:
+    image: nextcloud:latest
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - nextcloud_data:/var/www/html
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: your_user
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: your_database
+    depends_on:
+      - db
+
+volumes:
+  nextcloud_data:

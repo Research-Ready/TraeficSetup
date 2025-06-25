@@ -1,0 +1,8 @@
+version: "3.9"
+
+services:
+  sumo:
+    image: sumobility/sumo:latest
+    restart: unless-stopped
+    volumes:
+      - ./sumo_config:/etc/sumo

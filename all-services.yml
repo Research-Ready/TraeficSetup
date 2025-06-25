@@ -1,0 +1,270 @@
+version: "3.9"
+
+services:
+  openbb:
+    image: openbb/openbb-terminal:latest
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+
+  ortools:
+    image: python:3.9-slim-buster
+    restart: unless-stopped
+    volumes:
+      - ./ortools_code:/app
+    working_dir: /app
+    command: ["python", "your_script.py"] # Replace with your script
+
+  rstudio:
+    image: rstudio/rstudio:latest
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+
+  sumo:
+    image: sumobility/sumo:latest
+    restart: unless-stopped
+    volumes:
+      - ./sumo_config:/etc/sumo
+
+  influxdb:
+    image: influxdb:latest
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+
+  knime:
+    image: knime/knime-server:latest
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+
+  orange:
+    image: orange-bioinformatics/orange3:latest
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+
+  octave:
+    image: octave:latest
+    restart: unless-stopped
+    ports:
+      - "8084:8084"
+
+  scilab:
+    image: scilab/scilab:latest
+    restart: unless-stopped
+    ports:
+      - "8085:8085"
+
+  jaamsim:
+    image: jaamsim/jaamsim:latest
+    restart: unless-stopped
+    volumes:
+      - ./jaamsim_models:/models
+
+  simpy:
+    image: python:3.9-slim-buster
+    restart: unless-stopped
+    volumes:
+      - ./simpy_code:/app
+    working_dir: /app
+    command: ["python", "your_script.py"] # Replace with your script
+
+  mesa:
+    image: python:3.9-slim-buster
+    restart: unless-stopped
+    volumes:
+      - ./mesa_code:/app
+    working_dir: /app
+    command: ["python", "your_script.py"] # Replace with your script
+
+  spark:
+    image: apache/spark:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "4040:4040"
+
+  airflow:
+    image: apache/airflow:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - airflow_data:/opt/airflow
+
+  overleaf:
+    image: overleaf/overleaf:latest
+    restart: unless-stopped
+    ports:
+      - "8087:80"
+
+  etherpad:
+    image: etherpad/etherpad:latest
+    restart: unless-stopped
+    ports:
+      - "9001:9001"
+
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+
+  gitea:
+    image: gitea/gitea:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+
+  mattermost:
+    image: mattermost/mattermost-team-edition:latest
+    restart: unless-stopped
+    ports:
+      - "8065:8065"
+
+  workadventure:
+    image: workadventure/workadventure:latest
+    restart: unless-stopped
+    ports:
+      - "8088:8080"
+
+  focalboard:
+    image: focalboard/focalboard:latest
+    restart: unless-stopped
+    ports:
+      - "8089:8080"
+
+  timefold:
+    image: timefold/timefold:latest
+    restart: unless-stopped
+    ports:
+      - "8090:8080"
+
+  pyomo:
+    image: python:3.9-slim-buster
+    restart: unless-stopped
+    volumes:
+      - ./pyomo_code:/app
+    working_dir: /app
+    command: ["python", "your_script.py"] # Replace with your script
+
+  glpk:
+    image: glpk/glpk:latest
+    restart: unless-stopped
+
+  quantlib:
+    image: python:3.9-slim-buster
+    restart: unless-stopped
+    volumes:
+      - ./quantlib_code:/app
+    working_dir: /app
+    command: ["python", "your_script.py"] # Replace with your script
+
+  openboxes:
+    image: openboxes/openboxes:latest
+    restart: unless-stopped
+    ports:
+      - "8091:8080"
+
+  odoo:
+    image: odoo:latest
+    restart: unless-stopped
+    ports:
+      - "8069:8069"
+
+  borgbackup:
+    image: borgbackup/borg:latest
+    restart: unless-stopped
+
+  labplot:
+    image: labplot/labplot:latest
+    restart: unless-stopped
+
+  r:
+    image: r-base:latest
+    restart: unless-stopped
+
+  openwebui:
+    image: openwebui/openwebui:latest
+    restart: unless-stopped
+    ports:
+      - "8092:8080"
+
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+
+  crewai:
+    image: crewai/crewai:latest
+    restart: unless-stopped
+
+  bigagi:
+    image: bigagi/bigagi:latest
+    restart: unless-stopped
+
+  ansible:
+    image: ansible/ansible:latest
+    restart: unless-stopped
+    volumes:
+      - ./ansible_playbooks:/etc/ansible
+
+  quarto:
+    image: quarto/quarto:latest
+    restart: unless-stopped
+
+  logseq:
+    image: logseq/logseq:latest
+    restart: unless-stopped
+
+  kile:
+    image: kile/kile:latest
+    restart: unless-stopped
+
+  chainforge:
+    image: chainforge/chainforge:latest
+    restart: unless-stopped
+
+  crawlai:
+    image: crawlai/crawlai:latest
+    restart: unless-stopped
+
+  kotaemon:
+    image: kotaemon/kotaemon:latest
+    restart: unless-stopped
+
+  cantor:
+    image: cantor/cantor:latest
+    restart: unless-stopped
+
+  kstars:
+    image: kstars/kstars:latest
+    restart: unless-stopped
+
+  rkward:
+    image: rkward/rkward:latest
+    restart: unless-stopped
+
+  kmplot:
+    image: kmplot/kmplot:latest
+    restart: unless-stopped
+
+  kalzium:
+    image: kalzium/kalzium:latest
+    restart: unless-stopped
+
+  step:
+    image: step/step:latest
+    restart: unless-stopped
+
+  rocs:
+    image: rocs/rocs:latest
+    restart: unless-stopped
+
+volumes:
+  influxdb_data:
+  airflow_data:
