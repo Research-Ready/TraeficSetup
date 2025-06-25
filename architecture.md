@@ -4,6 +4,71 @@
 
 This document outlines the architecture for the Value Chain Hackers infrastructure, designed to provide a robust and scalable platform for research in logistics, finance, and supply chain management. The infrastructure is based on Docker containers orchestrated with Docker Compose and Traefik as a reverse proxy and load balancer.
 
+External IP:
+94.142.241.156
+ 
+Traefik: 10.0.4.10
+
+```mermaid
+graph TD
+    subgraph Internet
+        User[External User]
+        Admin[You, the Admin]
+    end
+
+    subgraph "Cloudflare (example.com)"
+        DNS[DNS Records]
+    end
+
+    subgraph "Your Datacenter"
+        Public_IP[Public IP: 94.142.241.156]
+
+        subgraph "Proxmox Host"
+            Firewall[Proxmox Firewall & NAT]
+            OpenVPN[OpenVPN Service]
+
+            subgraph "Network: vmbr4 (10.0.4.0/24)"
+                Traefik_LXC[Traefik LXC <br> 10.0.4.10]
+            end
+
+            subgraph "Network: vmbr5 (10.0.5.0/24)"
+                Dev_Placeholder[Dev Services <br> 10.0.5.x]
+            end
+
+            subgraph "Network: vmbr6 (10.0.6.0/24)"
+                Test_Placeholder[Test Services <br> 10.0.6.x]
+            end
+
+            subgraph "Network: vmbr7 (10.0.7.0/24)"
+                Acc_Placeholder[Acceptance Services <br> 10.0.7.x]
+            end
+
+            subgraph "Network: vmbr8 (10.0.8.0/24)"
+                Prod_Placeholder[Production Services <br> 10.0.8.x]
+            end
+        end
+    end
+
+    %% Define Connections
+    User -- HTTPS --> DNS
+    DNS -- "A Record: *" --> Public_IP
+    Public_IP -- "Ports 80/443" --> Firewall
+    Firewall -- "Port Forwarding" --> Traefik_LXC
+
+    Traefik_LXC -- "Can Route To" --> Dev_Placeholder
+    Traefik_LXC -- "Can Route To" --> Test_Placeholder
+    Traefik_LXC -- "Can Route To" --> Acc_Placeholder
+    Traefik_LXC -- "Can Route To" --> Prod_Placeholder
+
+    Dev_Placeholder ---->|Only talks back to| Traefik_LXC
+    Test_Placeholder ---->|Only talks back to| Traefik_LXC
+    Acc_Placeholder ---->|Only talks back to| Traefik_LXC
+    Prod_Placeholder ---->|Only talks back to| Traefik_LXC
+
+    Admin -- "VPN Tunnel" --> OpenVPN
+    OpenVPN -- "Management Access" --> Proxmox
+```
+
 ## Key Components
 
 *   **Traefik:** Acts as the entry point for all external traffic, routing requests to the appropriate services based on hostnames and TLS certificates. (10.0.5.10)
