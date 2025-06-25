@@ -30,35 +30,43 @@ graph TD
                 Rule2[2. FORWARD Rule <br> Allows packet from vmbr0 to vmbr4]
             end
 
-            subgraph "Network: vmbr4 (10.0.4.0/24)"
+            %% --- Network Layers ---
+            subgraph "Network: vmbr4 (10.0.4.0/24) - Traefik"
                 Traefik_LXC[Traefik LXC <br> 10.0.4.10]
             end
 
-            subgraph "Network: vmbr5 (10.0.5.0/24)"
-                Dev_Services[Future Dev Services]
+            subgraph "Network: vmbr5 (10.0.5.0/24) - Development"
+                Dev_Services[Future Dev Services <br> e.g., app.dev.vch.xyz]
             end
 
-            subgraph "Network: vmbr8 (10.0.8.0/24)"
-                Prod_Services[Future Prod Services]
+            subgraph "Network: vmbr6 (10.0.6.0/24) - Test"
+                Test_Services[Future Test Services <br> e.g., app.test.vch.xyz]
             end
-            %% ... other networks omitted for clarity
+            
+            subgraph "Network: vmbr7 (10.0.7.0/24) - Acceptance"
+                Acc_Services[Future Acc Services <br> e.g., app.acc.vch.xyz]
+            end
+
+            subgraph "Network: vmbr8 (10.0.8.0/24) - Production"
+                Prod_Services[Future Prod Services <br> e.g., app.prod.vch.xyz]
+            end
         end
     end
 
     %% --- Data Flow ---
-    User -- "https://app.valuechainhackers.xyz" --> DNS
+    User -- "Requests a service URL" --> DNS
     DNS -- "Points to 94.142.241.156" --> Public_IP
     Public_IP --> Public_Interface
+    Public_Interface -- "Packet arrives on host" --> Rule1
+    Rule1 -- "Destination IP becomes 10.0.4.10" --> Rule2
+    Rule2 -- "Packet forwarding is permitted" --> Traefik_LXC
 
-    subgraph "Traffic Path on Proxmox Host"
-        Public_Interface -- "Packet on port 443 arrives" --> Rule1
-        Rule1 -- "Packet is now addressed to 10.0.4.10" --> Rule2
-        Rule2 -- "Packet is permitted to cross network boundary" --> Traefik_LXC
-    end
-
-    subgraph "Traffic Path inside Traefik"
-        Traefik_LXC -- "Inspects Hostname: 'app...'" --> Dev_Services
-        Traefik_LXC -- "Inspects Hostname: 'prod...'" --> Prod_Services
+    %% --- Intelligent Routing by Traefik ---
+    subgraph "Traefik's Routing Logic"
+      Traefik_LXC -- "Inspects Host: 'app.dev...'" --> Dev_Services
+      Traefik_LXC -- "Inspects Host: 'app.test...'" --> Test_Services
+      Traefik_LXC -- "Inspects Host: 'app.acc...'" --> Acc_Services
+      Traefik_LXC -- "Inspects Host: 'app.prod...'" --> Prod_Services
     end
 ```
 
