@@ -12,6 +12,6 @@ http:
     demonstrator-service:
       loadBalancer:
         servers:
-          - url: "http://10.0.5.13:5000"
-          - url: "http://10.0.5.13:5001"
+          - url: "http://10.0.5.12:5000"
+          - url: "http://10.0.5.12:5001"
         passHostHeader: true

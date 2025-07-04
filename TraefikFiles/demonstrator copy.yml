@@ -1,0 +1,30 @@
+http:
+  routers:
+    demonstrator-web:
+      entryPoints:
+        - websecure
+      rule: Host(`demonstrator.valuechainhackers.xyz`) && PathPrefix(`/`)
+      service: web-service
+      tls:
+        certResolver: myresolver
+
+    demonstrator-api:
+      entryPoints:
+        - websecure
+      rule: Host(`demonstrator.valuechainhackers.xyz`) && PathPrefix(`/api`)
+      service: api-service
+      tls:
+        certResolver: myresolver
+
+  services:
+    web-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.5.12:5000"
+        passHostHeader: true
+
+    api-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.5.12:5001"
+        passHostHeader: true

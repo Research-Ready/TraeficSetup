@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -e
+
+echo "========================"
+echo "🟢 Updating system..."
+echo "========================"
+apt update && apt upgrade -y
+
+echo "========================"
+echo "🟢 Installing base packages..."
+echo "========================"
+apt install -y wget curl nano git lsb-release apt-transport-https software-properties-common gnupg2
+
+echo "========================"
+echo "🟢 Installing .NET SDK 3.1 and ASP.NET Core runtime..."
+echo "========================"
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+dpkg -i packages-microsoft-prod.deb
+
+apt update
+apt install -y dotnet-sdk-3.1 aspnetcore-runtime-3.1
+
+echo "========================"
+echo "🟢 Installing SQL Server 2019..."
+echo "========================"
+curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2019.list)"
+apt update
+apt install -y mssql-server
+
+echo "========================"
+echo "⚙️ Running SQL Server setup..."
+echo "========================"
+/opt/mssql/bin/mssql-conf setup
+
+echo "========================"
+echo "✅ Starting SQL Server service..."
+echo "========================"
+systemctl start mssql-server
+systemctl enable mssql-server
+
+echo "========================"
+echo "🟢 Installing SQL Server tools..."
+echo "========================"
+curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | tee /etc/apt/sources.list.d/msprod.list
+apt update
+ACCEPT_EULA=Y apt install -y mssql-tools unixodbc-dev
+
+echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+source ~/.bashrc
+
+echo "========================"
+echo "✅ All done."
+echo "========================"

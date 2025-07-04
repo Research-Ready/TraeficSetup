@@ -1,0 +1,41 @@
+http:
+  routers:
+    demonstrator-web:
+      rule: "Host(`demonstrator.valuechainhackers.xyz`)"
+      entryPoints:
+        - websecure
+      service: demonstrator-web-service
+      tls:
+        certResolver: myresolver
+
+    demonstrator-api:
+      rule: "Host(`api.demonstrator.valuechainhackers.xyz`)"
+      entryPoints:
+        - websecure
+      service: demonstrator-api-service
+      tls:
+        certResolver: myresolver
+
+    demonstrator-test:
+      rule: "Host(`testdemonstrator.valuechainhackers.xyz`)"
+      entryPoints:
+        - websecure
+      service: demonstrator-test-service
+      tls:
+        certResolver: myresolver
+
+  services:
+    demonstrator-web-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.5.13:5000"
+
+    demonstrator-api-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.5.13:5002"
+
+    demonstrator-test-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.5.13:5003"
