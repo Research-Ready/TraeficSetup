@@ -1,0 +1,111 @@
+#!/bin/bash
+set -e
+
+# Usage info
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 <container_ip> <public_url>"
+  echo "Example: $0 10.0.6.14 https://jupyter.valuechainhackers.xyz"
+  exit 1
+fi
+
+CONTAINER_IP="$1"
+PUBLIC_URL="$2"
+
+echo "🔎 Checking JupyterHub internal setup..."
+
+# Check venv
+if [ ! -d "/opt/jupyterhub-venv" ]; then
+  echo "❌ Virtual environment /opt/jupyterhub-venv not found!"
+  echo "💡 Suggestion: Did you run the setup script to create it? Run:"
+  echo "    python3 -m venv /opt/jupyterhub-venv"
+  exit 1
+fi
+echo "✅ Virtual environment found."
+
+# Check JupyterHub binary
+if [ ! -f "/opt/jupyterhub-venv/bin/jupyterhub" ]; then
+  echo "❌ JupyterHub binary not found in venv!"
+  echo "💡 Suggestion: Activate venv and reinstall:"
+  echo "    source /opt/jupyterhub-venv/bin/activate"
+  echo "    pip install jupyterhub"
+  exit 1
+fi
+echo "✅ JupyterHub binary found."
+
+# Check config file
+if [ ! -f "/srv/jupyterhub/jupyterhub_config.py" ]; then
+  echo "❌ Config file /srv/jupyterhub/jupyterhub_config.py not found!"
+  echo "💡 Suggestion: Check if you created it correctly or rerun your config generation script."
+  exit 1
+fi
+echo "✅ Config file found."
+
+# Check configurable-http-proxy
+if ! command -v configurable-http-proxy >/dev/null 2>&1; then
+  echo "❌ configurable-http-proxy not found!"
+  echo "💡 Suggestion: Install it globally with:"
+  echo "    npm install -g configurable-http-proxy"
+else
+  echo "✅ configurable-http-proxy found."
+fi
+
+# Check Python version
+source /opt/jupyterhub-venv/bin/activate
+PY_VER=$(python --version)
+echo "✅ Python version in venv: $PY_VER"
+
+# Check pip packages
+echo "📦 Checking if JupyterHub and notebook are installed..."
+if ! pip show jupyterhub >/dev/null 2>&1 || ! pip show notebook >/dev/null 2>&1; then
+  echo "❌ JupyterHub or notebook package not found!"
+  echo "💡 Suggestion: Install missing packages inside venv:"
+  echo "    pip install jupyterhub notebook"
+  deactivate
+  exit 1
+else
+  echo "✅ JupyterHub and notebook packages installed."
+fi
+deactivate
+
+# Check port 8000
+if ss -tulpn | grep ":8000 " >/dev/null 2>&1; then
+  echo "⚠️ Port 8000 is in use. JupyterHub might be running."
+  echo "💡 Suggestion: Check running processes with:"
+  echo "    ss -tulpn | grep 8000"
+else
+  echo "✅ Port 8000 is free."
+fi
+
+# Localhost check
+echo "🔗 Testing JupyterHub on localhost:8000..."
+if curl -s -I "http://127.0.0.1:8000" | grep -q "200 OK"; then
+  echo "✅ JupyterHub is responding on localhost:8000"
+else
+  echo "❌ No response from localhost:8000."
+  echo "💡 Suggestion: Make sure JupyterHub is running:"
+  echo "    source /opt/jupyterhub-venv/bin/activate"
+  echo "    jupyterhub -f /srv/jupyterhub/jupyterhub_config.py"
+fi
+
+# Container IP check
+echo "🌐 Testing JupyterHub on container IP ($CONTAINER_IP:8000)..."
+if curl -s -I "http://$CONTAINER_IP:8000" | grep -q "200 OK"; then
+  echo "✅ JupyterHub is responding on $CONTAINER_IP:8000"
+else
+  echo "❌ No response from $CONTAINER_IP:8000."
+  echo "💡 Suggestion: Check network bridge configuration and firewall rules."
+fi
+
+# Public URL check
+echo "🌍 Testing JupyterHub on public URL ($PUBLIC_URL)..."
+if curl -s -I "$PUBLIC_URL" | grep -q "200 OK"; then
+  echo "✅ Public URL is responding correctly!"
+else
+  echo "❌ No response from public URL."
+  echo "💡 Suggestions:"
+  echo "  - Check your Traefik dynamic config file and ensure correct IP mapping."
+  echo "  - Check DNS records for $PUBLIC_URL point to Traefik public IP."
+  echo "  - Check firewall rules on the server and Traefik container logs."
+fi
+
+echo "🎉 All checks completed!"

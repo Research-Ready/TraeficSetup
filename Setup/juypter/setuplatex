@@ -1,0 +1,49 @@
+#!/bin/bash
+set -e
+
+echo "🚀 Installing Quarto CLI and LaTeX dependencies (Debian 12 Bookworm)..."
+
+# 1️⃣ Install Quarto CLI
+QUARTO_VERSION="1.7.32"
+echo "🔽 Downloading Quarto v$QUARTO_VERSION..."
+curl -sSL -o /tmp/quarto.tar.gz \
+  "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.tar.gz"
+
+echo "📦 Extracting to /opt/quarto/${QUARTO_VERSION}..."
+sudo mkdir -p /opt/quarto/${QUARTO_VERSION}
+sudo tar -xzf /tmp/quarto.tar.gz -C /opt/quarto/${QUARTO_VERSION} --strip-components=1
+rm /tmp/quarto.tar.gz
+
+echo "🔗 Adding symlink to /usr/local/bin/quarto..."
+sudo ln -sf /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
+
+echo "✅ Quarto installed: $(quarto --version)"
+
+# 2️⃣ Install full TeX Live (complete LaTeX support)
+echo "📚 Installing TeX Live full suite (this might take a while and ~3 GB)..."
+sudo apt update
+sudo apt install -y texlive-full
+
+echo "✅ TeX Live installed. Checking pdflatex..."
+which pdflatex
+
+# 3️⃣ Test PDF rendering
+echo -e "\n🧪 Testing PDF rendering with Quarto..."
+cat <<EOF > /tmp/test_qmd.qmd
+---
+title: "PDF Test"
+format: pdf
+---
+
+This is a **TeX Live-powered** PDF test!
+EOF
+
+# Render PDF in place
+quarto render /tmp/test_qmd.qmd --to pdf
+
+# Move to more visible location
+mv /tmp/test_qmd.pdf /tmp/test_qmd_result.pdf
+
+echo "✅ PDF created at /tmp/test_qmd_result.pdf"
+
+echo "🎉 Everything is ready! Quarto and LaTeX are fully set up on this server."

@@ -1,0 +1,15 @@
+http:
+  routers:
+    jupyterhub:
+      rule: "Host(`jupyter.valuechainhackers.xyz`)"
+      entryPoints:
+        - websecure
+      service: jupyterhub-service
+      tls:
+        certResolver: myresolver
+
+  services:
+    jupyterhub-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.13:8000"

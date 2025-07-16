@@ -1,0 +1,39 @@
+#!/bin/bash
+set -e
+
+LOGFILE="/var/log/jupyterhub.log"
+
+# Check root permissions for writing to /var/log
+if [ "$(id -u)" -ne 0 ]; then
+  echo "❌ Please run this script as root or with sudo."
+  exit 1
+fi
+
+echo "🚀 Starting JupyterHub with log output to $LOGFILE"
+
+# Check venv
+if [ ! -d "/opt/jupyterhub-venv" ]; then
+  echo "❌ Virtual environment /opt/jupyterhub-venv not found!"
+  exit 1
+fi
+
+# Check config
+if [ ! -f "/srv/jupyterhub/jupyterhub_config.py" ]; then
+  echo "❌ Config file /srv/jupyterhub/jupyterhub_config.py not found!"
+  exit 1
+fi
+
+# Create log file if not exist
+touch "$LOGFILE"
+chmod 644 "$LOGFILE"
+
+while true; do
+  echo "🟢 Starting new JupyterHub instance at $(date)" >> "$LOGFILE"
+  
+  source /opt/jupyterhub-venv/bin/activate
+  jupyterhub -f /srv/jupyterhub/jupyterhub_config.py >> "$LOGFILE" 2>&1
+  deactivate
+
+  echo "⚠️ JupyterHub crashed or stopped at $(date). Restarting in 5 seconds..." >> "$LOGFILE"
+  sleep 5
+done

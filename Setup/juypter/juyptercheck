@@ -1,0 +1,132 @@
+#!/bin/bash
+set -e
+
+# --- Color setup ---
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# --- Default public URL ---
+DEFAULT_URL="https://jupyter.valuechainhackers.xyz"
+
+# --- Ask user for URL ---
+echo -e "${YELLOW}Please enter the public URL to check, or press Enter to use default:${NC}"
+echo -e "Default: ${GREEN}${DEFAULT_URL}${NC}"
+read -rp "URL: " PUBLIC_URL
+
+# Use default if empty
+if [ -z "$PUBLIC_URL" ]; then
+  PUBLIC_URL="$DEFAULT_URL"
+  echo -e "${GREEN}✅ Using default URL: $PUBLIC_URL${NC}"
+else
+  echo -e "${GREEN}✅ Using provided URL: $PUBLIC_URL${NC}"
+fi
+
+# --- Auto-detect local container IP ---
+CONTAINER_IP=$(hostname -I | awk '{print $1}')
+echo -e "${YELLOW}🔎 Detected container IP: $CONTAINER_IP${NC}"
+
+echo -e "${YELLOW}🔎 Checking JupyterHub internal setup...${NC}"
+
+# Check venv
+if [ ! -d "/opt/jupyterhub-venv" ]; then
+  echo -e "${RED}❌ Virtual environment /opt/jupyterhub-venv not found!${NC}"
+  echo "💡 Suggestion: python3 -m venv /opt/jupyterhub-venv"
+  exit 1
+fi
+echo -e "${GREEN}✅ Virtual environment found.${NC}"
+
+# Check JupyterHub binary
+if [ ! -f "/opt/jupyterhub-venv/bin/jupyterhub" ]; then
+  echo -e "${RED}❌ JupyterHub binary not found in venv!${NC}"
+  echo "💡 Suggestion: activate venv and run: pip install jupyterhub"
+  exit 1
+fi
+echo -e "${GREEN}✅ JupyterHub binary found.${NC}"
+
+# Check config file
+if [ ! -f "/srv/jupyterhub/jupyterhub_config.py" ]; then
+  echo -e "${RED}❌ Config file /srv/jupyterhub/jupyterhub_config.py not found!${NC}"
+  echo "💡 Suggestion: Check or regenerate your JupyterHub config."
+  exit 1
+fi
+echo -e "${GREEN}✅ Config file found.${NC}"
+
+# Check configurable-http-proxy
+if ! command -v configurable-http-proxy >/dev/null 2>&1; then
+  echo -e "${RED}❌ configurable-http-proxy not found!${NC}"
+  echo "💡 Suggestion: npm install -g configurable-http-proxy"
+else
+  echo -e "${GREEN}✅ configurable-http-proxy found.${NC}"
+fi
+
+# Check Python version and packages
+source /opt/jupyterhub-venv/bin/activate
+PY_VER=$(python --version)
+echo -e "${GREEN}✅ Python version in venv: $PY_VER${NC}"
+
+echo -e "${YELLOW}📦 Checking if JupyterHub and notebook are installed...${NC}"
+MISSING=0
+if ! pip show jupyterhub >/dev/null 2>&1; then
+  echo -e "${RED}❌ JupyterHub package missing!${NC}"
+  MISSING=1
+fi
+if ! pip show notebook >/dev/null 2>&1; then
+  echo -e "${RED}❌ Notebook package missing!${NC}"
+  MISSING=1
+fi
+
+if [ "$MISSING" -eq 1 ]; then
+  echo "💡 Suggestion: In venv, run: pip install jupyterhub notebook"
+else
+  echo -e "${GREEN}✅ JupyterHub and notebook packages installed.${NC}"
+fi
+deactivate
+
+# Check port 8000
+if ss -tulpn | grep ":8000 " >/dev/null 2>&1; then
+  echo -e "${YELLOW}⚠️ Port 8000 is in use. JupyterHub might be running.${NC}"
+else
+  echo -e "${GREEN}✅ Port 8000 is free.${NC}"
+fi
+
+# Function to check HTTP status
+check_http() {
+  local url="$1"
+  status=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+  echo "$status"
+}
+
+# Localhost check
+echo -e "${YELLOW}🔗 Testing JupyterHub on localhost:8000...${NC}"
+status=$(check_http "http://127.0.0.1:8000")
+if [[ "$status" == "200" || "$status" == "302" ]]; then
+  echo -e "${GREEN}✅ JupyterHub is responding on localhost:8000 (HTTP $status)${NC}"
+else
+  echo -e "${RED}❌ No valid response from localhost:8000 (HTTP $status).${NC}"
+fi
+
+# Container IP check
+echo -e "${YELLOW}🌐 Testing JupyterHub on container IP ($CONTAINER_IP:8000)...${NC}"
+status=$(check_http "http://$CONTAINER_IP:8000")
+if [[ "$status" == "200" || "$status" == "302" ]]; then
+  echo -e "${GREEN}✅ JupyterHub is responding on $CONTAINER_IP:8000 (HTTP $status)${NC}"
+else
+  echo -e "${RED}❌ No valid response from $CONTAINER_IP:8000 (HTTP $status).${NC}"
+fi
+
+# Public URL check
+echo -e "${YELLOW}🌍 Testing JupyterHub on public URL ($PUBLIC_URL)...${NC}"
+status=$(check_http "$PUBLIC_URL")
+if [[ "$status" == "200" || "$status" == "302" ]]; then
+  echo -e "${GREEN}✅ Public URL is responding correctly! (HTTP $status)${NC}"
+else
+  echo -e "${RED}❌ No valid response from public URL ($PUBLIC_URL) (HTTP $status).${NC}"
+  echo "💡 Suggestions:"
+  echo "  - Check Traefik dynamic config and IP mapping."
+  echo "  - Verify DNS points to correct public IP."
+  echo "  - Check firewall and Traefik container logs."
+fi
+
+echo -e "${GREEN}🎉 All checks completed!${NC}"

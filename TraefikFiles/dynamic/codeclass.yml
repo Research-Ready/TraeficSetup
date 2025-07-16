@@ -1,0 +1,67 @@
+http:
+  routers:
+    gitea:
+      rule: "Host(`code.valuechainhackers.xyz`)"
+      entryPoints:
+        - websecure
+      service: gitea-service
+      tls:
+        certResolver: myresolver
+
+    metabase:
+      rule: "Host(`data.valuechainhackers.xyz`)"
+      entryPoints:
+        - websecure
+      service: metabase-service
+      tls:
+        certResolver: myresolver
+
+    seafile:
+      rule: "Host(`files-seafile.valuechainhackers.xyz`)"
+      entryPoints:
+        - websecure
+      service: seafile-service
+      tls:
+        certResolver: myresolver
+
+    nextcloud:
+      rule: "Host(`files.valuechainhackers.xyz`)"
+      entryPoints:
+        - websecure
+      service: nextcloud-service
+      tls:
+        certResolver: myresolver
+
+    voila:
+      rule: "Host(`voila.valuechainhackers.xyz`)"
+      entryPoints:
+        - websecure
+      service: voila-service
+      tls:
+        certResolver: myresolver
+
+  services:
+    gitea-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.22:3000"
+
+    metabase-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.25:3000"
+
+    seafile-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.24:80"
+
+    nextcloud-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.23:80"
+
+    voila-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.26:8866"

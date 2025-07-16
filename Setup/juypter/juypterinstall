@@ -1,0 +1,61 @@
+#!/bin/bash
+set -e
+
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Run as root (sudo)." >&2
+  exit 1
+fi
+
+echo "🟢 Updating APT"
+apt-get update
+
+echo "🛠️ Installing base packages (Python, venv, Node.js, npm)"
+apt-get install -y python3 python3-pip python3-venv curl nodejs npm sudo
+
+echo "🟢 Creating Python virtual environment at /opt/jupyterhub-venv"
+python3 -m venv /opt/jupyterhub-venv
+
+echo "✅ Activating virtual environment and installing pip packages"
+source /opt/jupyterhub-venv/bin/activate
+
+pip install --upgrade pip wheel
+pip install jupyterhub jupyterhub-traefik-proxy notebook
+
+echo "🟢 Installing configurable-http-proxy globally"
+npm install -g configurable-http-proxy
+
+deactivate
+
+echo "📁 Creating JupyterHub config directory"
+mkdir -p /srv/jupyterhub
+
+echo "📝 Writing example jupyterhub_config.py"
+cat <<EOF >/srv/jupyterhub/jupyterhub_config.py
+c = get_config()
+c.JupyterHub.bind_url = 'http://0.0.0.0:8000'
+c.JupyterHub.authenticator_class = 'dummy'
+c.DummyAuthenticator.password = "yourpassword"
+EOF
+
+echo "⚡ Performing test run to verify JupyterHub binary"
+source /opt/jupyterhub-venv/bin/activate
+
+if /opt/jupyterhub-venv/bin/jupyterhub --help >/dev/null 2>&1; then
+  echo "✅ JupyterHub command is working"
+else
+  echo "❌ JupyterHub command not found or failed"
+  exit 1
+fi
+
+deactivate
+
+echo ""
+echo "✅ ✅ All done!"
+echo ""
+echo "✨ To start JupyterHub now, run:"
+echo "source /opt/jupyterhub-venv/bin/activate"
+echo "jupyterhub -f /srv/jupyterhub/jupyterhub_config.py"
+echo ""
+echo "💡 Then access it at: http://10.0.6.14:8000 or via Traefik on your public domain."
+echo "⚠️ Don't forget: this config uses DummyAuthenticator, which is insecure for production!"
+echo ""
