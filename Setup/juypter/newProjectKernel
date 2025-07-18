@@ -1,0 +1,77 @@
+#!/bin/sh
+
+# ==============================================================================
+# JupyterHub Project Setup Script
+#
+# This script automates the creation of an isolated Python environment for a
+# new project. It installs the necessary packages and makes the environment
+# available as a selectable "Kernel" within Jupyter notebooks.
+#
+# HOW TO USE:
+# 1. Change the variables in the "Configuration" section below.
+# 2. Run this script from your home directory in the Jupyter Terminal using:
+#    . ./setup_project.sh
+#    (Note the dot-space at the beginning!)
+# ==============================================================================
+
+
+# --- Configuration ------------------------------------------------------------
+# Change these variables for your new project.
+
+# The name of the project folder and the machine-readable kernel name.
+# !! MUST NOT CONTAIN SPACES !! Use hyphens or underscores.
+PROJECT_NAME="LitStudy-Project"
+
+# The pretty name that will appear in the Jupyter kernel selection menu.
+# (This one CAN contain spaces).
+PROJECT_DISPLAY_NAME="LitStudy Project"
+
+# A list of Python packages to install in the environment.
+# List all packages inside the quotes, separated by spaces.
+# To pin a specific version, use 'package==version'.
+PACKAGES_TO_INSTALL='litstudy pandas matplotlib scikit-learn "scipy==1.12.0"'
+# ------------------------------------------------------------------------------
+
+
+# --- Script Execution ---------------------------------------------------------
+# (You shouldn't need to change anything below this line)
+
+echo "Step 1: Creating project directory..."
+cd ~
+mkdir -p "$PROJECT_NAME"
+cd "$PROJECT_NAME"
+
+echo "Step 2: Creating the virtual environment 'env'..."
+python3 -m venv env
+
+echo "Step 3: Activating the virtual environment..."
+# We use '.' instead of 'source' because the JupyterHub terminal uses 'sh'.
+. env/bin/activate
+
+echo "Step 4: Installing core tools and required packages..."
+# First, ensure pip is up-to-date and install ipykernel for Jupyter integration.
+pip install --upgrade pip
+pip install ipykernel
+
+# Now, install the packages defined in the configuration.
+pip install $PACKAGES_TO_INSTALL
+
+echo "Step 5: Creating kernel directory path to prevent errors..."
+# This is a workaround for an issue where the kernel installation fails
+# if the target directory doesn't already exist.
+mkdir -p ~/.local/share/jupyter/kernels
+
+echo "Step 6: Registering the new environment as a Jupyter Kernel..."
+python -m ipykernel install --user --name="$PROJECT_NAME" --display-name="$PROJECT_DISPLAY_NAME"
+
+echo ""
+echo "--- SETUP COMPLETE ---"
+echo ""
+echo "You can now use your new environment!"
+echo "1. Refresh your web browser."
+echo "2. Open your notebook."
+echo "3. Go to the menu: Kernel > Change kernel > '$PROJECT_DISPLAY_NAME'"
+echo ""
+
+# Deactivating the environment so the user's terminal returns to normal.
+deactivate

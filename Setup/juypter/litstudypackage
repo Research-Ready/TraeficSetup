@@ -1,0 +1,1 @@
+pip install bibtexparser gensim networkx pybliometrics pyvis requests seaborn scikit-learn unidecode wordcloud feedparser

@@ -14,6 +14,7 @@ http:
         - websecure
       service: demonstrator-api-service
       tls:
+    
         certResolver: myresolver
 
     demonstrator-test:
