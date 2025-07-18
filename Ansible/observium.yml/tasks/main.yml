@@ -1,0 +1,4 @@
+---
+- name: Run task for observium.yml
+  debug:
+    msg: 'Running task for observium.yml'

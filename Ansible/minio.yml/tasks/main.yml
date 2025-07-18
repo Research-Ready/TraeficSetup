@@ -1,0 +1,4 @@
+---
+- name: Run task for minio.yml
+  debug:
+    msg: 'Running task for minio.yml'

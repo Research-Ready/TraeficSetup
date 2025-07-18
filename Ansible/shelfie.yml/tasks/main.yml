@@ -1,0 +1,4 @@
+---
+- name: Run task for shelfie.yml
+  debug:
+    msg: 'Running task for shelfie.yml'

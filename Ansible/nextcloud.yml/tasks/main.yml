@@ -1,0 +1,4 @@
+---
+- name: Run task for nextcloud.yml
+  debug:
+    msg: 'Running task for nextcloud.yml'

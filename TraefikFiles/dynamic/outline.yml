@@ -1,0 +1,12 @@
+http:
+  routers:
+    outline-router:
+      rule: "Host(`outline.valuechainhackers.xyz`)"
+      service: outline-service
+      entryPoints:
+        - web
+  services:
+    outline-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.54:3000"

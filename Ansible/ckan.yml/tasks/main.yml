@@ -1,0 +1,4 @@
+---
+- name: Run task for ckan.yml
+  debug:
+    msg: 'Running task for ckan.yml'

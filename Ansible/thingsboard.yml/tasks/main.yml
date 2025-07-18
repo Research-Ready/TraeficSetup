@@ -1,0 +1,4 @@
+---
+- name: Run task for thingsboard.yml
+  debug:
+    msg: 'Running task for thingsboard.yml'

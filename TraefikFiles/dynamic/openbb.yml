@@ -1,0 +1,12 @@
+http:
+  routers:
+    openbb-router:
+      rule: "Host(`openbb.valuechainhackers.xyz`)"
+      service: openbb-service
+      entryPoints:
+        - web
+  services:
+    openbb-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.53:8000"

@@ -1,0 +1,12 @@
+http:
+  routers:
+    crewai-router:
+      rule: "Host(`crewai.valuechainhackers.xyz`)"
+      service: crewai-service
+      entryPoints:
+        - web
+  services:
+    crewai-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.24:8080"

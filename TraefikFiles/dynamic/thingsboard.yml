@@ -1,0 +1,12 @@
+http:
+  routers:
+    thingsboard-router:
+      rule: "Host(`thingsboard.valuechainhackers.xyz`)"
+      service: thingsboard-service
+      entryPoints:
+        - web
+  services:
+    thingsboard-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.81:8080"

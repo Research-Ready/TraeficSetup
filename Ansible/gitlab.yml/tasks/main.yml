@@ -1,0 +1,4 @@
+---
+- name: Run task for gitlab.yml
+  debug:
+    msg: 'Running task for gitlab.yml'

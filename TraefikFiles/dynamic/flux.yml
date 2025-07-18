@@ -1,0 +1,12 @@
+http:
+  routers:
+    flux-router:
+      rule: "Host(`flux.valuechainhackers.xyz`)"
+      service: flux-service
+      entryPoints:
+        - web
+  services:
+    flux-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.28:8080"

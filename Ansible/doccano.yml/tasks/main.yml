@@ -1,0 +1,4 @@
+---
+- name: Run task for doccano.yml
+  debug:
+    msg: 'Running task for doccano.yml'

@@ -1,0 +1,4 @@
+---
+- name: Run task for timescaledb.yml
+  debug:
+    msg: 'Running task for timescaledb.yml'

@@ -1,0 +1,4 @@
+---
+- name: Run task for flux.yml
+  debug:
+    msg: 'Running task for flux.yml'

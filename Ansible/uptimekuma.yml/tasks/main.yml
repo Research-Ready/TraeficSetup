@@ -1,0 +1,4 @@
+---
+- name: Run task for uptimekuma.yml
+  debug:
+    msg: 'Running task for uptimekuma.yml'

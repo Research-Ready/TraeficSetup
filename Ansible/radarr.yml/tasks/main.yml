@@ -1,0 +1,4 @@
+---
+- name: Run task for radarr.yml
+  debug:
+    msg: 'Running task for radarr.yml'

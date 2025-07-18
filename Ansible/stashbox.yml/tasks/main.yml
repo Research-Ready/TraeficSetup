@@ -1,0 +1,4 @@
+---
+- name: Run task for stashbox.yml
+  debug:
+    msg: 'Running task for stashbox.yml'

@@ -1,0 +1,12 @@
+http:
+  routers:
+    stashbox-router:
+      rule: "Host(`stashbox.valuechainhackers.xyz`)"
+      service: stashbox-service
+      entryPoints:
+        - web
+  services:
+    stashbox-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.75:8000"

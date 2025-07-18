@@ -1,0 +1,4 @@
+---
+- name: Run task for paperless.yml
+  debug:
+    msg: 'Running task for paperless.yml'

@@ -1,0 +1,4 @@
+---
+- name: Run task for borgbackup.yml
+  debug:
+    msg: 'Running task for borgbackup.yml'

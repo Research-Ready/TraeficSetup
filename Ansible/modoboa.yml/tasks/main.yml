@@ -1,0 +1,4 @@
+---
+- name: Run task for modoboa.yml
+  debug:
+    msg: 'Running task for modoboa.yml'

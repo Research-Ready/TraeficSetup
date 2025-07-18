@@ -1,0 +1,12 @@
+http:
+  routers:
+    grafana-router:
+      rule: "Host(`grafana.valuechainhackers.xyz`)"
+      service: grafana-service
+      entryPoints:
+        - web
+  services:
+    grafana-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.32:3000"

@@ -1,0 +1,4 @@
+---
+- name: Run task for teamcity.yml
+  debug:
+    msg: 'Running task for teamcity.yml'

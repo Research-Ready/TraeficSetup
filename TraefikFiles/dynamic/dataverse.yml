@@ -1,0 +1,12 @@
+http:
+  routers:
+    dataverse-router:
+      rule: "Host(`dataverse.valuechainhackers.xyz`)"
+      service: dataverse-service
+      entryPoints:
+        - web
+  services:
+    dataverse-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.25:8080"

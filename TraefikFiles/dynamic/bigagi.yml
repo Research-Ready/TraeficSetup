@@ -1,0 +1,12 @@
+http:
+  routers:
+    bigagi-router:
+      rule: "Host(`bigagi.valuechainhackers.xyz`)"
+      service: bigagi-service
+      entryPoints:
+        - web
+  services:
+    bigagi-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.18:8000"

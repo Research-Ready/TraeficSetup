@@ -1,0 +1,12 @@
+http:
+  routers:
+    rainloop-router:
+      rule: "Host(`rainloop.valuechainhackers.xyz`)"
+      service: rainloop-service
+      entryPoints:
+        - web
+  services:
+    rainloop-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.62:8080"

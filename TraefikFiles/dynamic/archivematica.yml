@@ -1,0 +1,12 @@
+http:
+  routers:
+    archivematica-router:
+      rule: "Host(`archivematica.valuechainhackers.xyz`)"
+      service: archivematica-service
+      entryPoints:
+        - web
+  services:
+    archivematica-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.17:8080"

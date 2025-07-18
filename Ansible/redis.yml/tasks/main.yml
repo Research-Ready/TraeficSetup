@@ -1,0 +1,4 @@
+---
+- name: Run task for redis.yml
+  debug:
+    msg: 'Running task for redis.yml'

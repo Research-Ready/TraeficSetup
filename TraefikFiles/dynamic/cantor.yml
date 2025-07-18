@@ -1,0 +1,12 @@
+http:
+  routers:
+    cantor-router:
+      rule: "Host(`cantor.valuechainhackers.xyz`)"
+      service: cantor-service
+      entryPoints:
+        - web
+  services:
+    cantor-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.20:8080"

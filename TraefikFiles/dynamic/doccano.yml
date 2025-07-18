@@ -1,0 +1,12 @@
+http:
+  routers:
+    doccano-router:
+      rule: "Host(`doccano.valuechainhackers.xyz`)"
+      service: doccano-service
+      entryPoints:
+        - web
+  services:
+    doccano-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.26:8000"

@@ -1,0 +1,4 @@
+---
+- name: Run task for syncthing.yml
+  debug:
+    msg: 'Running task for syncthing.yml'

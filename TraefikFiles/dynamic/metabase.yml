@@ -1,0 +1,12 @@
+http:
+  routers:
+    metabase-router:
+      rule: "Host(`metabase.valuechainhackers.xyz`)"
+      service: metabase-service
+      entryPoints:
+        - web
+  services:
+    metabase-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.47:3000"

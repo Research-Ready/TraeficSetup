@@ -1,0 +1,12 @@
+http:
+  routers:
+    archivebox-router:
+      rule: "Host(`archivebox.valuechainhackers.xyz`)"
+      service: archivebox-service
+      entryPoints:
+        - web
+  services:
+    archivebox-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.16:8000"

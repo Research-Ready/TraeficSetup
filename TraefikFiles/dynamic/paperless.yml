@@ -1,0 +1,12 @@
+http:
+  routers:
+    paperless-router:
+      rule: "Host(`paperless.valuechainhackers.xyz`)"
+      service: paperless-service
+      entryPoints:
+        - web
+  services:
+    paperless-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.55:8000"

@@ -1,0 +1,12 @@
+http:
+  routers:
+    tablo-router:
+      rule: "Host(`tablo.valuechainhackers.xyz`)"
+      service: tablo-service
+      entryPoints:
+        - web
+  services:
+    tablo-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.77:8080"

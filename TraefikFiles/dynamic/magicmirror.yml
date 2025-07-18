@@ -1,0 +1,12 @@
+http:
+  routers:
+    magicmirror-router:
+      rule: "Host(`magicmirror.valuechainhackers.xyz`)"
+      service: magicmirror-service
+      entryPoints:
+        - web
+  services:
+    magicmirror-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.45:8080"

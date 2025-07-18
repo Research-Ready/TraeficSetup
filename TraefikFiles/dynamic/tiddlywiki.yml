@@ -1,0 +1,12 @@
+http:
+  routers:
+    tiddlywiki-router:
+      rule: "Host(`tiddlywiki.valuechainhackers.xyz`)"
+      service: tiddlywiki-service
+      entryPoints:
+        - web
+  services:
+    tiddlywiki-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.82:8080"

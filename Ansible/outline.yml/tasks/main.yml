@@ -1,0 +1,4 @@
+---
+- name: Run task for outline.yml
+  debug:
+    msg: 'Running task for outline.yml'

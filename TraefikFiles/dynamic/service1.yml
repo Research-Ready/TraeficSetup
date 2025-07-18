@@ -1,0 +1,12 @@
+http:
+  routers:
+    service1-router:
+      rule: "Host(`service1.test`)"
+      service: service1-service
+      entryPoints:
+        - web
+  services:
+    service1-service:
+      loadBalancer:
+        servers:
+- url: "http://10.0.6.10:8080"

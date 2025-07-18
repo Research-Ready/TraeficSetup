@@ -1,0 +1,12 @@
+http:
+  routers:
+    influxdb-router:
+      rule: "Host(`influxdb.valuechainhackers.xyz`)"
+      service: influxdb-service
+      entryPoints:
+        - web
+  services:
+    influxdb-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.33:8086"

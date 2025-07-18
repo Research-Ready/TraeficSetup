@@ -1,0 +1,12 @@
+http:
+  routers:
+    labplot-router:
+      rule: "Host(`labplot.valuechainhackers.xyz`)"
+      service: labplot-service
+      entryPoints:
+        - web
+  services:
+    labplot-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.40:8080"

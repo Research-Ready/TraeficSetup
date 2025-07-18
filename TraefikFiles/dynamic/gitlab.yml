@@ -1,0 +1,12 @@
+http:
+  routers:
+    gitlab-router:
+      rule: "Host(`gitlab.valuechainhackers.xyz`)"
+      service: gitlab-service
+      entryPoints:
+        - web
+  services:
+    gitlab-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.29:8080"

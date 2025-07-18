@@ -1,0 +1,4 @@
+---
+- name: Run task for tiddlywiki.yml
+  debug:
+    msg: 'Running task for tiddlywiki.yml'

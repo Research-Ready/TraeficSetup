@@ -1,0 +1,4 @@
+---
+- name: Run task for qownnotes.yml
+  debug:
+    msg: 'Running task for qownnotes.yml'

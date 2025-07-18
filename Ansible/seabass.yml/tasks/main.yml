@@ -1,0 +1,4 @@
+---
+- name: Run task for seabass.yml
+  debug:
+    msg: 'Running task for seabass.yml'

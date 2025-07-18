@@ -1,0 +1,12 @@
+http:
+  routers:
+    chainforge-router:
+      rule: "Host(`chainforge.valuechainhackers.xyz`)"
+      service: chainforge-service
+      entryPoints:
+        - web
+  services:
+    chainforge-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.21:8080"

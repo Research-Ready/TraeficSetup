@@ -1,0 +1,12 @@
+http:
+  routers:
+    redis-router:
+      rule: "Host(`redis.valuechainhackers.xyz`)"
+      service: redis-service
+      entryPoints:
+        - web
+  services:
+    redis-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.11:6379"

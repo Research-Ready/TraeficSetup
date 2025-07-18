@@ -1,0 +1,12 @@
+http:
+  routers:
+    ckan-router:
+      rule: "Host(`ckan.valuechainhackers.xyz`)"
+      service: ckan-service
+      entryPoints:
+        - web
+  services:
+    ckan-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.22:5000"

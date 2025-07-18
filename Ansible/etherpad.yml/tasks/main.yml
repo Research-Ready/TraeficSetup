@@ -1,0 +1,4 @@
+---
+- name: Run task for etherpad.yml
+  debug:
+    msg: 'Running task for etherpad.yml'

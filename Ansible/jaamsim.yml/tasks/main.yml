@@ -1,0 +1,4 @@
+---
+- name: Run task for jaamsim.yml
+  debug:
+    msg: 'Running task for jaamsim.yml'

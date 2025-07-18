@@ -1,0 +1,4 @@
+---
+- name: Run task for restic.yml
+  debug:
+    msg: 'Running task for restic.yml'

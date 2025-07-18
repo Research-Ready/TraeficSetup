@@ -1,0 +1,4 @@
+---
+- name: Run task for config.yml
+  debug:
+    msg: 'Running task for config.yml'

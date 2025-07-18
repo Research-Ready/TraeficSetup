@@ -1,0 +1,4 @@
+---
+- name: Run task for terragrunt.yml
+  debug:
+    msg: 'Running task for terragrunt.yml'

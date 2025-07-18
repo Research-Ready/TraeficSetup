@@ -1,0 +1,12 @@
+http:
+  routers:
+    restic-router:
+      rule: "Host(`restic.valuechainhackers.xyz`)"
+      service: restic-service
+      entryPoints:
+        - web
+  services:
+    restic-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.65:8080"

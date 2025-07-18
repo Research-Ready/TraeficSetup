@@ -1,0 +1,4 @@
+---
+- name: Run task for rainloop.yml
+  debug:
+    msg: 'Running task for rainloop.yml'

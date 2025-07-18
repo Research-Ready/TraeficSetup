@@ -1,0 +1,12 @@
+http:
+  routers:
+    teamcity-router:
+      rule: "Host(`teamcity.valuechainhackers.xyz`)"
+      service: teamcity-service
+      entryPoints:
+        - web
+  services:
+    teamcity-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.78:8111"

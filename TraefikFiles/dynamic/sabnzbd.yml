@@ -1,0 +1,12 @@
+http:
+  routers:
+    sabnzbd-router:
+      rule: "Host(`sabnzbd.valuechainhackers.xyz`)"
+      service: sabnzbd-service
+      entryPoints:
+        - web
+  services:
+    sabnzbd-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.68:8080"

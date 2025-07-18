@@ -1,0 +1,4 @@
+---
+- name: Run task for influxdb.yml
+  debug:
+    msg: 'Running task for influxdb.yml'

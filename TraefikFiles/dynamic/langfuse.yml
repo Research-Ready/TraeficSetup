@@ -1,0 +1,12 @@
+http:
+  routers:
+    langfuse-router:
+      rule: "Host(`langfuse.valuechainhackers.xyz`)"
+      service: langfuse-service
+      entryPoints:
+        - web
+  services:
+    langfuse-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.41:8080"

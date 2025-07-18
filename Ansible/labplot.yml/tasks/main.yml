@@ -1,0 +1,4 @@
+---
+- name: Run task for labplot.yml
+  debug:
+    msg: 'Running task for labplot.yml'

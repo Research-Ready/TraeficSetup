@@ -1,0 +1,12 @@
+http:
+  routers:
+    glpk-router:
+      rule: "Host(`glpk.valuechainhackers.xyz`)"
+      service: glpk-service
+      entryPoints:
+        - web
+  services:
+    glpk-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.31:8080"

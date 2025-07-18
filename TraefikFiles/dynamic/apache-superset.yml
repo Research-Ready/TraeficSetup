@@ -1,0 +1,12 @@
+http:
+  routers:
+    apache-superset-router:
+      rule: "Host(`apache-superset.valuechainhackers.xyz`)"
+      service: apache-superset-service
+      entryPoints:
+        - web
+  services:
+    apache-superset-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.15:8088"

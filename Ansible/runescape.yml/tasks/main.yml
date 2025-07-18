@@ -1,0 +1,4 @@
+---
+- name: Run task for runescape.yml
+  debug:
+    msg: 'Running task for runescape.yml'

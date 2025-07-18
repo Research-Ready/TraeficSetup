@@ -1,0 +1,12 @@
+http:
+  routers:
+    sonarr-router:
+      rule: "Host(`sonarr.valuechainhackers.xyz`)"
+      service: sonarr-service
+      entryPoints:
+        - web
+  services:
+    sonarr-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.73:8920"

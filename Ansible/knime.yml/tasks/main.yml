@@ -1,0 +1,4 @@
+---
+- name: Run task for knime.yml
+  debug:
+    msg: 'Running task for knime.yml'

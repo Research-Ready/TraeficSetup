@@ -1,0 +1,12 @@
+http:
+  routers:
+    timescaledb-router:
+      rule: "Host(`timescaledb.valuechainhackers.xyz`)"
+      service: timescaledb-service
+      entryPoints:
+        - web
+  services:
+    timescaledb-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.83:5432"

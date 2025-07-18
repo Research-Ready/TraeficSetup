@@ -1,0 +1,4 @@
+---
+- name: Run task for magicmirror.yml
+  debug:
+    msg: 'Running task for magicmirror.yml'

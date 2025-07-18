@@ -1,0 +1,12 @@
+http:
+  routers:
+    readarr-router:
+      rule: "Host(`readarr.valuechainhackers.xyz`)"
+      service: readarr-service
+      entryPoints:
+        - web
+  services:
+    readarr-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.63:8787"

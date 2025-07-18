@@ -1,0 +1,4 @@
+---
+- name: Run task for kile.yml
+  debug:
+    msg: 'Running task for kile.yml'

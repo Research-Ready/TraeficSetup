@@ -1,0 +1,12 @@
+http:
+  routers:
+    remnant-router:
+      rule: "Host(`remnant.valuechainhackers.xyz`)"
+      service: remnant-service
+      entryPoints:
+        - web
+  services:
+    remnant-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.64:8080"

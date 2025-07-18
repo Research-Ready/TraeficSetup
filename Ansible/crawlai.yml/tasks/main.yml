@@ -1,0 +1,4 @@
+---
+- name: Run task for crawlai.yml
+  debug:
+    msg: 'Running task for crawlai.yml'

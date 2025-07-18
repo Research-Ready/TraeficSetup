@@ -1,0 +1,4 @@
+---
+- name: Run task for chainforge.yml
+  debug:
+    msg: 'Running task for chainforge.yml'

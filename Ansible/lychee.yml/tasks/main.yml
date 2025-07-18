@@ -1,0 +1,4 @@
+---
+- name: Run task for lychee.yml
+  debug:
+    msg: 'Running task for lychee.yml'

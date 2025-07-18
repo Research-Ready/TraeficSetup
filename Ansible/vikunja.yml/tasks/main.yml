@@ -1,0 +1,4 @@
+---
+- name: Run task for vikunja.yml
+  debug:
+    msg: 'Running task for vikunja.yml'

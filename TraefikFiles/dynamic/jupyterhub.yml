@@ -1,0 +1,12 @@
+http:
+  routers:
+    jupyterhub-router:
+      rule: "Host(`jupyterhub.valuechainhackers.xyz`)"
+      service: jupyterhub-service
+      entryPoints:
+        - web
+  services:
+    jupyterhub-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.34:8000"

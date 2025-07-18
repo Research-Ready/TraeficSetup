@@ -1,0 +1,12 @@
+http:
+  routers:
+    observium-router:
+      rule: "Host(`observium.valuechainhackers.xyz`)"
+      service: observium-service
+      entryPoints:
+        - web
+  services:
+    observium-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.52:8080"

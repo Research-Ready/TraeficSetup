@@ -1,0 +1,12 @@
+http:
+  routers:
+    postgresql-router:
+      rule: "Host(`postgresql.valuechainhackers.xyz`)"
+      service: postgresql-service
+      entryPoints:
+        - web
+  services:
+    postgresql-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.10:5432"

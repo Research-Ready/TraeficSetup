@@ -1,0 +1,12 @@
+http:
+  routers:
+    borgbackup-router:
+      rule: "Host(`borgbackup.valuechainhackers.xyz`)"
+      service: borgbackup-service
+      entryPoints:
+        - web
+  services:
+    borgbackup-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.19:8080"

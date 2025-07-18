@@ -1,0 +1,4 @@
+---
+- name: Run task for remnant.yml
+  debug:
+    msg: 'Running task for remnant.yml'

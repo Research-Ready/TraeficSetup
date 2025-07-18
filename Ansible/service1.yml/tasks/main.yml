@@ -1,0 +1,4 @@
+---
+- name: Run task for service1.yml
+  debug:
+    msg: 'Running task for service1.yml'

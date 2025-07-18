@@ -1,0 +1,12 @@
+http:
+  routers:
+    piwigo-router:
+      rule: "Host(`piwigo.valuechainhackers.xyz`)"
+      service: piwigo-service
+      entryPoints:
+        - web
+  services:
+    piwigo-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.57:8080"

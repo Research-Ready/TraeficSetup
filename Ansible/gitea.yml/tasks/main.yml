@@ -1,0 +1,4 @@
+---
+- name: Run task for gitea.yml
+  debug:
+    msg: 'Running task for gitea.yml'

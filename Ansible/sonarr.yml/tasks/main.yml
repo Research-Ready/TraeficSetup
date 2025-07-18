@@ -1,0 +1,4 @@
+---
+- name: Run task for sonarr.yml
+  debug:
+    msg: 'Running task for sonarr.yml'

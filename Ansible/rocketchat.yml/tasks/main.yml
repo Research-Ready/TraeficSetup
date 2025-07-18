@@ -1,0 +1,4 @@
+---
+- name: Run task for rocketchat.yml
+  debug:
+    msg: 'Running task for rocketchat.yml'

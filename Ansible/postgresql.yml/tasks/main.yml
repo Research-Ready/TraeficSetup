@@ -1,0 +1,4 @@
+---
+- name: Run task for postgresql.yml
+  debug:
+    msg: 'Running task for postgresql.yml'

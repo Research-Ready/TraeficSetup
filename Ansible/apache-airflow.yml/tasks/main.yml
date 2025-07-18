@@ -1,0 +1,4 @@
+---
+- name: Run task for apache-airflow.yml
+  debug:
+    msg: 'Running task for apache-airflow.yml'

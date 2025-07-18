@@ -1,0 +1,4 @@
+---
+- name: Run task for nginxproxymanager.yml
+  debug:
+    msg: 'Running task for nginxproxymanager.yml'

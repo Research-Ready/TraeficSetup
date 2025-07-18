@@ -1,0 +1,4 @@
+---
+- name: Run task for piwigo.yml
+  debug:
+    msg: 'Running task for piwigo.yml'

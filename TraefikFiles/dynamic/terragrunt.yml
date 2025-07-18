@@ -1,0 +1,12 @@
+http:
+  routers:
+    terragrunt-router:
+      rule: "Host(`terragrunt.valuechainhackers.xyz`)"
+      service: terragrunt-service
+      entryPoints:
+        - web
+  services:
+    terragrunt-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.79:8000"

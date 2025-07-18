@@ -1,0 +1,12 @@
+http:
+  routers:
+    scrypted-router:
+      rule: "Host(`scrypted.valuechainhackers.xyz`)"
+      service: scrypted-service
+      entryPoints:
+        - web
+  services:
+    scrypted-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.70:7000"

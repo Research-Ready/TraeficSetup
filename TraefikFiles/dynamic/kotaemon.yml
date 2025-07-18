@@ -1,0 +1,12 @@
+http:
+  routers:
+    kotaemon-router:
+      rule: "Host(`kotaemon.valuechainhackers.xyz`)"
+      service: kotaemon-service
+      entryPoints:
+        - web
+  services:
+    kotaemon-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.39:8000"

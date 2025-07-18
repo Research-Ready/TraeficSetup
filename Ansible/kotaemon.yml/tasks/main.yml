@@ -1,0 +1,4 @@
+---
+- name: Run task for kotaemon.yml
+  debug:
+    msg: 'Running task for kotaemon.yml'

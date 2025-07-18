@@ -1,0 +1,4 @@
+---
+- name: Run task for demonstrator.yml
+  debug:
+    msg: 'Running task for demonstrator.yml'

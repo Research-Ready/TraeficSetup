@@ -1,0 +1,12 @@
+http:
+  routers:
+    qownnotes-router:
+      rule: "Host(`qownnotes.valuechainhackers.xyz`)"
+      service: qownnotes-service
+      entryPoints:
+        - web
+  services:
+    qownnotes-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.60:8080"

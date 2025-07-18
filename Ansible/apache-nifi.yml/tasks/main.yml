@@ -1,0 +1,4 @@
+---
+- name: Run task for apache-nifi.yml
+  debug:
+    msg: 'Running task for apache-nifi.yml'

@@ -1,0 +1,4 @@
+---
+- name: Run task for openbb.yml
+  debug:
+    msg: 'Running task for openbb.yml'

@@ -1,0 +1,4 @@
+---
+- name: Run task for jupyterhub.yml
+  debug:
+    msg: 'Running task for jupyterhub.yml'

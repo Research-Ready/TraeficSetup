@@ -1,0 +1,12 @@
+http:
+  routers:
+    lua-router:
+      rule: "Host(`lua.valuechainhackers.xyz`)"
+      service: lua-service
+      entryPoints:
+        - web
+  services:
+    lua-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.43:8080"

@@ -1,0 +1,4 @@
+---
+- name: Run task for grafana.yml
+  debug:
+    msg: 'Running task for grafana.yml'

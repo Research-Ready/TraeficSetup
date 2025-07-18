@@ -1,0 +1,12 @@
+http:
+  routers:
+    seabass-router:
+      rule: "Host(`seabass.valuechainhackers.xyz`)"
+      service: seabass-service
+      entryPoints:
+        - web
+  services:
+    seabass-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.71:8000"

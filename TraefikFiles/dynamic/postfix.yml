@@ -1,0 +1,12 @@
+http:
+  routers:
+    postfix-router:
+      rule: "Host(`postfix.valuechainhackers.xyz`)"
+      service: postfix-service
+      entryPoints:
+        - web
+  services:
+    postfix-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.58:8080"

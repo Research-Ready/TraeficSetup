@@ -1,0 +1,12 @@
+http:
+  routers:
+    gitea-router:
+      rule: "Host(`gitea.valuechainhackers.xyz`)"
+      service: gitea-service
+      entryPoints:
+        - web
+  services:
+    gitea-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.30:3000"

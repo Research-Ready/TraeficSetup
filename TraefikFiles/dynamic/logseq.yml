@@ -1,0 +1,12 @@
+http:
+  routers:
+    logseq-router:
+      rule: "Host(`logseq.valuechainhackers.xyz`)"
+      service: logseq-service
+      entryPoints:
+        - web
+  services:
+    logseq-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.42:8080"

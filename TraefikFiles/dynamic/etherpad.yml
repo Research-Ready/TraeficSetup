@@ -1,0 +1,12 @@
+http:
+  routers:
+    etherpad-router:
+      rule: "Host(`etherpad.valuechainhackers.xyz`)"
+      service: etherpad-service
+      entryPoints:
+        - web
+  services:
+    etherpad-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.27:9001"

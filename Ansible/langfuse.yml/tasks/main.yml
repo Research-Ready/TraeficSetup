@@ -1,0 +1,4 @@
+---
+- name: Run task for langfuse.yml
+  debug:
+    msg: 'Running task for langfuse.yml'

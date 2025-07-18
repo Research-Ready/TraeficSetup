@@ -1,0 +1,4 @@
+---
+- name: Run task for mattermost.yml
+  debug:
+    msg: 'Running task for mattermost.yml'

@@ -1,0 +1,12 @@
+http:
+  routers:
+    spacemux-router:
+      rule: "Host(`spacemux.valuechainhackers.xyz`)"
+      service: spacemux-service
+      entryPoints:
+        - web
+  services:
+    spacemux-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.74:8000"

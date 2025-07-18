@@ -1,0 +1,12 @@
+http:
+  routers:
+    thecockpit-router:
+      rule: "Host(`thecockpit.valuechainhackers.xyz`)"
+      service: thecockpit-service
+      entryPoints:
+        - web
+  services:
+    thecockpit-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.80:8000"

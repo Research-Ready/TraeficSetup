@@ -1,0 +1,4 @@
+---
+- name: Run task for logseq.yml
+  debug:
+    msg: 'Running task for logseq.yml'

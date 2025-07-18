@@ -1,0 +1,12 @@
+http:
+  routers:
+    apache-nifi-router:
+      rule: "Host(`apache-nifi.valuechainhackers.xyz`)"
+      service: apache-nifi-service
+      entryPoints:
+        - web
+  services:
+    apache-nifi-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.14:8080"

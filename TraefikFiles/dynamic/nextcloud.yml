@@ -1,0 +1,12 @@
+http:
+  routers:
+    nextcloud-router:
+      rule: "Host(`nextcloud.valuechainhackers.xyz`)"
+      service: nextcloud-service
+      entryPoints:
+        - web
+  services:
+    nextcloud-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.50:8080"

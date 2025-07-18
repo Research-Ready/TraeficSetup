@@ -1,0 +1,12 @@
+http:
+  routers:
+    vaultwarden-router:
+      rule: "Host(`vaultwarden.valuechainhackers.xyz`)"
+      service: vaultwarden-service
+      entryPoints:
+        - websecure
+  services:
+    vaultwarden-service:
+      loadBalancer:
+        servers:
+          - url: "http://10.0.6.91:80"

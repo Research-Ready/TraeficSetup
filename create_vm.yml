@@ -1,0 +1,20 @@
+---
+- hosts: proxmox
+  gather_facts: false
+  tasks:
+    - name: Create a new VM
+      community.general.proxmox_vm:
+        name: my_new_vm
+        node: pve
+        state: present
+        cpu: 2
+        memory: 4096
+        disk:
+          - size: 20G
+            storage: local-lvm
+        network:
+          - bridge: vmbr0
+            ip: 192.168.1.100
+            netmask: 24
+            gateway: 192.168.1.1
+        template: ubuntu-22.04-current # Or your preferred template
